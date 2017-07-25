@@ -12,10 +12,18 @@ public:
 
   /*
   * Coefficients
-  */ 
+  */
   double Kp;
   double Ki;
   double Kd;
+
+  /*
+   *Twiddle
+   */
+  int total_updates;
+  double p[3];
+  double dp[3];
+  double lowest_error;
 
   /*
   * Constructor
@@ -41,6 +49,13 @@ public:
   * Calculate the total PID error.
   */
   double TotalError();
+
+  /*
+   * Twiddle
+   */
+  double TwiddleError(double p[]);
+  void Twiddle();
+
 };
 
 #endif /* PID_H */

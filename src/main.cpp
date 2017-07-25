@@ -33,7 +33,11 @@ int main()
   uWS::Hub h;
 
   PID pid;
-  // TODO: Initialize the pid variable.
+  pid.Init(0.1, 0.0, 0.06);
+  int twiddle_iter = 0;
+  int twiddle_freq = 6;
+  double twiddle_frame = 0.0;
+  bool accelerate = false;
 
   h.onMessage([&pid](uWS::WebSocket<uWS::SERVER> ws, char *data, size_t length, uWS::OpCode opCode) {
     // "42" at the start of the message means there's a websocket message event.
@@ -51,19 +55,42 @@ int main()
           double speed = std::stod(j[1]["speed"].get<std::string>());
           double angle = std::stod(j[1]["steering_angle"].get<std::string>());
           double steer_value;
-          /*
-          * TODO: Calcuate steering value here, remember the steering value is
-          * [-1, 1].
-          * NOTE: Feel free to play around with the throttle and speed. Maybe use
-          * another PID controller to control the speed!
-          */
-          
+
+	  pid.UpdateError(cte);
+	  // twidlle updates
+	  twiddle_iter = twiddle_iter - 1;
+	  twiddle_frame = twiddle_frame + (cte/twiddle_freq);
+	  double twiddle_frame_sq = twiddle_frame * twiddle_frame;
+
+	  if(twiddle_iter == 0 && twiddle_frame_sq > 1.0){
+	    pid.Twiddle();
+	    accelerate = (speed > 50) ? false : true;
+	  } else if (speed > 50 && abs(twiddle_frame) > 1.5){
+	    accelerate =false;
+	  }else if (speed < 50 || (twiddle_iter == 0 && twiddle_frame_sq <= 1.0)){
+	    accelerate = true;
+	  }
+	  // twifddle re-init
+	  if (twiddle_iter <= 0 ){
+	    twiddle_iter = twiddle_freq;
+	    twiddle_frame = 0.0;
+	  }
+
+
+	  steer = pid.TotalError();
+
           // DEBUG
           std::cout << "CTE: " << cte << " Steering Value: " << steer_value << std::endl;
 
           json msgJson;
           msgJson["steering_angle"] = steer_value;
-          msgJson["throttle"] = 0.3;
+
+	  if(accelerate) {
+	    msgJson["throttle"] = 0.5;
+	  } else {
+	    msgJson["throttle"] = 0.0;
+	  }
+
           auto msg = "42[\"steer\"," + msgJson.dump() + "]";
           std::cout << msg << std::endl;
           ws.send(msg.data(), msg.length(), uWS::OpCode::TEXT);
