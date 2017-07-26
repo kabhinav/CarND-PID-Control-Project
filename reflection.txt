@@ -1,0 +1,6 @@
+
+* Choosing small values {0.1, 0.0, 0.9} for P, I, D gave the best result for the stable driving of car around the track.
+
+* Upon experimentation with the value of D component I found that the higher Kd value combined with faster throtle application made the car go off track very quickly.
+
+* I choose to keep low P, I, D  coefficients based on manual tuning. However, I used Twiddle to adjust the parameters based on average error calculated during several measurements.
