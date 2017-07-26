@@ -1,6 +1,8 @@
 #ifndef PID_H
 #define PID_H
 
+#include <vector>
+
 class PID {
 public:
   /*
@@ -20,9 +22,10 @@ public:
   /*
    *Twiddle
    */
+  double t_error;
   int total_updates;
-  double p[3];
-  double dp[3];
+  std::vector<double> p;
+  std::vector<double> dp;
   double lowest_error;
 
   /*
@@ -53,7 +56,7 @@ public:
   /*
    * Twiddle
    */
-  double TwiddleError(double p[]);
+  double TwiddleError(std::vector<double> p);
   void Twiddle();
 
 };

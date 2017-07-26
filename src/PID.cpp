@@ -1,4 +1,6 @@
 #include "PID.h"
+#include <iostream>
+#include <limits>
 
 using namespace std;
 
@@ -18,6 +20,7 @@ void PID::Init(double Kp, double Ki, double Kd) {
   p_error = 0.0;
   i_error = 0.0;
   d_error = 0.0;
+  t_error = 0.0;
   total_updates = 0;
   lowest_error = numeric_limits<double>::max();
   dp = {1.0, 1.0, 1.0};
@@ -31,6 +34,8 @@ void PID::UpdateError(double cte) {
   p_error = cte;
   // integral error
   i_error += cte;
+  // used in twiddle error
+  t_error = cte*cte;
 
   total_updates += 1;
 }
@@ -40,9 +45,9 @@ double PID::TotalError() {
   return error;
 }
 
-double PID::TwiddleError(double p []){
+double PID::TwiddleError(vector<double> p){
   double error = -(p[0]*p_error) - (p[1]*i_error) -(p[2]*d_error);
-  error = (cte*cte + error*error) / total_updates;
+  error = (t_error + error*error) / total_updates;
   return error;
 }
 
@@ -61,7 +66,7 @@ void PID::Twiddle(){
     cout << "Kp " << p[0] << " Ki " << p[1] << " Kd " << Kd << endl;
     cout << "dKp " << dp[0] << " dKi " << dp[1] << " dKd " << dp[2] << endl;
 
-    for(int j=0; j < p.size(); j++){
+    for(int j=0; j < int(p.size()); j++){
       p[j] += dp[j];
 
       double error = TwiddleError(p);
