@@ -1,6 +1,17 @@
+Discussion:
 
-* Choosing small values {0.1, 0.0, 0.9} for P, I, D gave the best result for the stable driving of car around the track.
+The aim of the project was to implement a PID controller for steering an autonomous vehicle. The PID controller facilitates the continuous error calculation of the difference between required (truth) and current steering angles of autonomus vehicle. Once the main program implmentation was completed, the parameter of the PID program were tuned to achieve the stable driving of autonomous vehicle on the simulator track.
 
-* Upon experimentation with the value of D component I found that the higher Kd value combined with faster throtle application made the car go off track very quickly.
+The initial values of three tuned parameters were:
 
-* I choose to keep low P, I, D  coefficients based on manual tuning. However, I used Twiddle to adjust the parameters based on average error calculated during several measurements.
+1. Proportional coffecient was set at value 0.1 to help reducing the oscillations of autonomous vehicle across the simulated track.
+
+2. Integral coffecient was finally kept at zero but experimenting with this value led to car run into a loop with left steering bias on the track. Upon further reading, I found that it is best to keep this value at 0 since there was no ystemic bias in the simulated environment.
+
+3. With Differntial coffecient value I experimented with values ranging 0.2 (small) to 1.2 (large) and differing throttle values. In the end I chose an intermidiate value 0.9 becuase it provided best combination of stable driving and speed across the track.
+
+Refection:
+
+* I ran the car across the simulated track several times observing the effect of each parameter value on the stable driving of the car. I observed that an increase in the value of differential value combined with faster throtle application made the car go off track very quickly. I tried to drive the car at max speed 50 mph. The steer angle seemed to hold in straight line but car quickly veered of the track while turning.
+
+* In order to make the successful turns I then used Twiddle from the lecture to adjust the parameters based on average error calculated during several measurements while reducing the speed threshold to 35 mph. However, I am interested in finding what changes/increment I need to do to make current PID controller robust enough for driving at max speed 50 mph across the track.

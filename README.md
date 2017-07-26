@@ -3,6 +3,26 @@ Self-Driving Car Engineer Nanodegree Program
 
 ---
 
+## Discussion
+
+The aim of the project was to implement a PID controller for steering an autonomous vehicle. The PID controller facilitates the continuous error calculation of the difference between required (truth) and current steering angles of auton
+omus vehicle. Once the main program implmentation was completed, the parameter of the PID program were tuned to achieve the stable driving of autonomous vehicle on the simulator track.
+
+The initial values of three tuned parameters were:
+
+1. Proportional coffecient was set at value 0.1 to help reducing the oscillations of autonomous vehicle across the simulated track.
+
+2. Integral coffecient was finally kept at zero but experimenting with this value led to car run into a loop with left steering bias on the track. Upon further reading, I found that it is best to keep this value at 0 since there was no systemic bias in the simulated environment.
+
+3. With Differntial coffecient value I experimented with values ranging 0.2 (small) to 1.2 (large) and differing throttle values. In the end I chose an intermidiate value 0.9 becuase it provided best combination of stable driving and sp
+eed across the track.
+
+## Refection
+* I ran the car across the simulated track several times observing the effect of each parameter value on the stable driving of the car. I observed that an increase in the value of differential value combined with faster throtle application made the car go off track very quickly. I tried to drive the car at max speed 50 mph. The steer angle seemed to hold in straight line but car quickly veered of the track while turning.
+
+* In order to make the successful turns I then used Twiddle from the lecture to adjust the parameters based on average error calculated during several measurements while reducing the speed threshold to 35 mph. However, I am interested i
+n finding what changes/increment I need to do to make current PID controller robust enough for driving at max speed 50 mph across the track.
+
 ## Dependencies
 
 * cmake >= 3.5
@@ -19,7 +39,7 @@ Self-Driving Car Engineer Nanodegree Program
   * Run either `./install-mac.sh` or `./install-ubuntu.sh`.
   * If you install from source, checkout to commit `e94b6e1`, i.e.
     ```
-    git clone https://github.com/uWebSockets/uWebSockets 
+    git clone https://github.com/uWebSockets/uWebSockets
     cd uWebSockets
     git checkout e94b6e1
     ```
@@ -33,60 +53,4 @@ There's an experimental patch for windows in this [PR](https://github.com/udacit
 1. Clone this repo.
 2. Make a build directory: `mkdir build && cd build`
 3. Compile: `cmake .. && make`
-4. Run it: `./pid`. 
-
-## Editor Settings
-
-We've purposefully kept editor configuration files out of this repo in order to
-keep it as simple and environment agnostic as possible. However, we recommend
-using the following settings:
-
-* indent using spaces
-* set tab width to 2 spaces (keeps the matrices in source code aligned)
-
-## Code Style
-
-Please (do your best to) stick to [Google's C++ style guide](https://google.github.io/styleguide/cppguide.html).
-
-## Project Instructions and Rubric
-
-Note: regardless of the changes you make, your project must be buildable using
-cmake and make!
-
-More information is only accessible by people who are already enrolled in Term 2
-of CarND. If you are enrolled, see [the project page](https://classroom.udacity.com/nanodegrees/nd013/parts/40f38239-66b6-46ec-ae68-03afd8a601c8/modules/f1820894-8322-4bb3-81aa-b26b3c6dcbaf/lessons/e8235395-22dd-4b87-88e0-d108c5e5bbf4/concepts/6a4d8d42-6a04-4aa6-b284-1697c0fd6562)
-for instructions and the project rubric.
-
-## Hints!
-
-* You don't have to follow this directory structure, but if you do, your work
-  will span all of the .cpp files here. Keep an eye out for TODOs.
-
-## Call for IDE Profiles Pull Requests
-
-Help your fellow students!
-
-We decided to create Makefiles with cmake to keep this project as platform
-agnostic as possible. Similarly, we omitted IDE profiles in order to we ensure
-that students don't feel pressured to use one IDE or another.
-
-However! I'd love to help people get up and running with their IDEs of choice.
-If you've created a profile for an IDE that you think other students would
-appreciate, we'd love to have you add the requisite profile files and
-instructions to ide_profiles/. For example if you wanted to add a VS Code
-profile, you'd add:
-
-* /ide_profiles/vscode/.vscode
-* /ide_profiles/vscode/README.md
-
-The README should explain what the profile does, how to take advantage of it,
-and how to install it.
-
-Frankly, I've never been involved in a project with multiple IDE profiles
-before. I believe the best way to handle this would be to keep them out of the
-repo root to avoid clutter. My expectation is that most profiles will include
-instructions to copy files to a new location to get picked up by the IDE, but
-that's just a guess.
-
-One last note here: regardless of the IDE used, every submitted project must
-still be compilable with cmake and make./
+4. Run it: `./pid`.
